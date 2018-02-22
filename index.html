@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <title>ProZone REST Client</title>
+    <script src="json2.js"></script>
+    <script src="jsonlint.js"></script>
+    <script>
+        window.onload = function () {
+            document.getElementById("button").onclick = function () {
+                try {
+                    var result = jsonlint.parse(document.getElementById("source").value);
+                    if (result) {
+                        document.getElementById("result").innerHTML = "JSON is valid!";
+                        document.getElementById("result").className = "pass";
+                        if (document.getElementById("reformat").checked) {
+                            document.getElementById("source").value = JSON.stringify(result, null, "  ");
+                        }
+                    }
+                } catch (e) {
+                    document.getElementById("result").innerHTML = e;
+                    document.getElementById("result").className = "fail";
+                }
+            };
+        }
+    </script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #result {
+            padding: 1em;
+        }
+
+        .pass {
+            background-color: #efe;
+            color: #393;
+            border: 2px solid #393;
+        }
+
+        .fail {
+            background-color: #fee;
+            color: #933;
+            border: 2px solid #933;
+        }
+
+        textarea {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="img/ggnb_prozone_icon.svg" alt="" width="72" height="72">
+        <h2>ProZone REST Client</h2>
+        <!--<p class="lead">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer-->
+        <!--took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially-->
+        <!--unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker-->
+        <!--including versions of Lorem Ipsum.</p>-->
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 order-md-1">
+            <h4 class="mb-3">Request URL
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-eraser"></i> Reset
+                </button>
+            </h4>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <select id="http-method" class="custom-select d-block w-100" required>
+                        <option value="">Choose..</option>
+                        <option value="get">GET</option>
+                        <option value="post">POST</option>
+                        <option value="put">PUT</option>
+                        <option value="delete">DELETE</option>
+                    </select>
+                </div>
+                <div class="col-md-9 mb-3">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="http-url" value="http://" aria-describedby="basic-addon3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <h4 class="mb-3">Query Parameter
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-eraser"></i> Reset
+                </button>
+            </h4>
+            <div id="div-query-parameter" class="row">
+                <div class="col-md-5 mb-3">
+                    <input id="query-parameter-key" class="form-control" type="text" placeholder="Key" value="" required>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <input id="query-parameter-value" class="form-control" type="text" placeholder="Value" value="" required>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button id="btn-query-parameter-add" class="btn btn-primary btn-block">Add</button>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <h4 class="mb-3">Request Header
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-eraser"></i> Reset
+                </button>
+            </h4>
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <input type="text" class="form-control" id="request-header-key" placeholder="Key" value="" required>
+                    <div class="invalid-feedback">
+                        Valid first name is required.
+                    </div>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <input type="text" class="form-control" id="request-header-value" placeholder="Value" value="" required>
+                    <div class="invalid-feedback">
+                        Valid last name is required.
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <button class="btn btn-primary btn-block" type="submit">Add</button>
+                </div>
+            </div>
+            <hr class="mb-4">
+            <h4 class="mb-3">Request Body
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-eraser"></i> Reset
+                </button>
+            </h4>
+            <textarea id="source" rows="20" cols="50"></textarea>
+            <p>
+                <button id="button" class="btn btn-primary btn-lg">Validate</button>
+                <input type="checkbox" value="yes" id="reformat"  style="margin-left: 12px"/>
+                <label for="reformat">JSON 정렬</label>
+            </p>
+            <pre id="result"></pre>
+            <hr class="mb-4">
+            <button id="btn-send" class="btn btn-primary btn-lg btn-block" type="submit">Send</button>
+            <hr class="mb-4">
+        </div>
+    </div>
+    <!--결과값-->
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <h4 class="mb-3">Responds Body
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <i class="far fa-copy"></i> Copy
+                </button>
+            </h4>
+            <textarea rows="20" cols="50" readonly></textarea>
+        </div>
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="http://code.jquery.com/jquery-3.2.1.min.js" iintegrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+
